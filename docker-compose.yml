@@ -1,0 +1,12 @@
+# Optional: most users should just `npm install && npm start` on the host.
+# Use this if you'd rather run the bot in a container.
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml
+      - ./.env:/app/.env
+    stdin_open: true
+    tty: true

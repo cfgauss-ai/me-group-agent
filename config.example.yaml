@@ -1,0 +1,77 @@
+# me-group-agent — example configuration
+#
+# Copy this file to config.yaml and edit it (or run `npm run setup` for an
+# interactive wizard). Every field below is optional unless noted — the
+# defaults shown here match src/config/schema.ts.
+
+bot:
+  # Required. Shown in logs and used as the bot's display identity.
+  name: "Group Helper"
+  # Required. One line describing the bot's personality; becomes the AI
+  # system prompt when ia.enabled is true.
+  persona: "You are a friendly, concise assistant for this community group."
+
+channels:
+  # At least one of whatsapp/telegram must be true.
+  whatsapp: true
+  telegram: false
+
+welcome:
+  enabled: false
+  # {nome} is replaced with the new member's display name.
+  message: "Welcome, {nome}!"
+  rules: "Please be respectful and avoid spam."
+
+moderation:
+  enabled: false
+  # Messages containing any of these words trigger `wordAction`.
+  blockedWords:
+    - "examplebadword"
+  linkPolicy:
+    # off: don't police links. allowlist: only allow links to allowedDomains.
+    mode: "off"
+    allowedDomains:
+      - "example.com"
+    # warn | delete | remove — action taken on a disallowed link.
+    action: "warn"
+  flood:
+    enabled: false
+    # The Nth message within windowSeconds triggers the action — a burst is
+    # actioned on the maxMessages-th message, not after maxMessages+1.
+    maxMessages: 5
+    windowSeconds: 10
+    # warn | delete | remove — action taken when the flood threshold is hit.
+    action: "warn"
+  # warn | delete | remove — action taken when a blocked word is found.
+  wordAction: "delete"
+
+ia:
+  # Off by default so the bot runs with zero API keys.
+  enabled: false
+  # OpenRouter model id used for AI replies.
+  model: "anthropic/claude-sonnet-5"
+  # If true, any message ending in "?" can trigger an AI reply (in addition
+  # to @mentioning the bot).
+  triggerOnQuestionMark: false
+  # Max knowledge-base entries injected into the AI prompt per reply.
+  maxKbResults: 3
+  # Minimum seconds between AI replies in the same group (cost guard).
+  cooldownSeconds: 10
+
+# Scheduled messages (cron). Each entry needs its own `groups` list.
+# If BOTH channels are enabled, each entry must also set `channel` —
+# otherwise it is skipped at runtime with a warning (ambiguous target).
+agenda:
+  - cron: "0 9 * * 1"
+    text: "Good morning! Reminder: weekly sync today."
+    channel: "whatsapp" # whatsapp | telegram — required only if both channels are on
+    groups:
+      - "REPLACE_WITH_GROUP_ID"
+
+# requires ia.enabled: true (uses the AI model to summarize)
+dailySummary:
+  enabled: false
+  cron: "0 21 * * *"
+  channel: "whatsapp" # whatsapp | telegram — required only if both channels are on
+  groups:
+    - "REPLACE_WITH_GROUP_ID"
