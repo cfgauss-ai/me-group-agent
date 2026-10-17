@@ -2,7 +2,7 @@ name: ci
 on:
   pull_request:
   push: { branches: [main] }
-concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }
+concurrency: { group: "ci-${{ github.ref }}", cancel-in-progress: true }
 permissions: { contents: read }
 jobs:
   gate:
@@ -16,4 +16,4 @@ jobs:
       - run: npm run preflight:ci
       - name: secret scan
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
-        env: { GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
